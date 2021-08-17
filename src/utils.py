@@ -32,14 +32,11 @@ def set_commit_status_pending_no_approve(commit):
 
 
 def set_commit_status_success_approve(commit):
-    print(commit.committer.login)
-    print(get_repo_approvers())
-    if commit.committer.login in get_repo_approvers():
-        commit.create_status(
-            state="success",
-            description="Approved by maintainers",
-            context=NEEDS_MAINTAINERS_APPROVE,
-        )
+    commit.create_status(
+        state="success",
+        description="Approved by maintainers",
+        context=NEEDS_MAINTAINERS_APPROVE,
+    )
 
 
 def remove_label(pull, label):
