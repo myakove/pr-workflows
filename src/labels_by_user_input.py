@@ -48,11 +48,13 @@ def labels_by_user_input(data, pull, commented_user):
         last_commit = list(pull.get_commits())[-1]
 
         if target_label in pr_labels and unlabel:
+
             if approved:
                 if not approver:
                     continue
 
                 set_commit_status_pending_no_approve(commit=last_commit)
+
             print(f"Removing {target_label} from {pull.title}")
             remove_label(pull=pull, label=target_label)
 
@@ -63,6 +65,7 @@ def labels_by_user_input(data, pull, commented_user):
             if approved:
                 if not approver:
                     continue
+
                 set_commit_status_success_approve(commit=last_commit)
 
             print(f"Adding {target_label} to {pull.title}")
