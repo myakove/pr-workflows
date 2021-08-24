@@ -50,6 +50,8 @@ def labels_by_user_input(data, pull, commented_user):
         if target_label in pr_labels and unlabel:
 
             if approved:
+                if not approver:
+                    continue
                 set_commit_status_pending_no_approve(commit=last_commit)
                 target_label = list(
                     (filter(lambda label: target_label in label, pr_labels))
@@ -57,7 +59,6 @@ def labels_by_user_input(data, pull, commented_user):
                     0
                 ]  # Extract correct approve label
 
-            print(f"Removing {target_label} from {pull.title}")
             remove_label(pull=pull, label=target_label)
 
             if verified:
@@ -70,7 +71,6 @@ def labels_by_user_input(data, pull, commented_user):
                 target_label = f"{commented_user}/{target_label}"
                 set_commit_status_success_approve(commit=last_commit)
 
-            print(f"Adding {target_label} to {pull.title}")
             add_label(pull=pull, label=target_label)
 
             if verified:
