@@ -50,28 +50,32 @@ def labels_by_user_input(data, pull, commented_user):
         if target_label in pr_labels and unlabel:
 
             if approved:
-                if not approver:
-                    continue
-                set_commit_status_pending_no_approve(commit=last_commit)
-                target_label = list(
-                    (filter(lambda label: target_label in label, pr_labels))
-                )[
-                    0
-                ]  # Extract correct approve label
+                if approver:
+                    set_commit_status_pending_no_approve(commit=last_commit)
+                    target_label = list(
+                        (filter(lambda label: target_label in label, pr_labels))
+                    )[
+                        0
+                    ]  # Extract correct approve label
+                    remove_label(pull=pull, label=target_label)
 
-            remove_label(pull=pull, label=target_label)
-
-            if verified:
+            elif verified:
                 set_commit_status_pending_no_verify(commit=last_commit)
+                remove_label(pull=pull, label=target_label)
+
+            else:
+                remove_label(pull=pull, label=target_label)
 
         if target_label not in pr_labels and not unlabel:
             if approved:
-                if not approver:
-                    continue
-                target_label = f"{commented_user}/{target_label}"
-                set_commit_status_success_approve(commit=last_commit)
+                if approver:
+                    target_label = f"{commented_user}/{target_label}"
+                    set_commit_status_success_approve(commit=last_commit)
+                    add_label(pull=pull, label=target_label)
 
-            add_label(pull=pull, label=target_label)
-
-            if verified:
+            elif verified:
                 set_commit_status_success_verify(commit=last_commit)
+                add_label(pull=pull, label=target_label)
+
+            else:
+                add_label(pull=pull, label=target_label)
