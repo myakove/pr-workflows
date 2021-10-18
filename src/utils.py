@@ -1,8 +1,18 @@
 import contextlib
 import os
+import re
 
 import yaml
 from github.GithubException import UnknownObjectException
+
+from src.constants import (
+    LABEL_KEY_MAJOR,
+    LABEL_KEY_MINOR,
+    LABEL_KEY_PATCH,
+    SEMVER,
+    SEMVER_LABELS_SET,
+    SEMVER_USER_INPUT_LABELS_MAP,
+)
 
 
 def get_pull_from_data(event_data, repo):
@@ -40,13 +50,19 @@ def get_pull_and_commit_by_commit_sha(event_data, repo):
     return None, None
 
 
+def get_last_commit(pull):
+    return list(pull.get_commits())[-1]
+
+
 def get_labels(pull):
     return [label.name for label in pull.get_labels()]
 
 
-def remove_label(pull, label):
-    labels = get_labels(pull=pull)
-    if label in labels:
+def remove_label(pull, label, labels_from_pull=None):
+    if labels_from_pull is None:
+        labels_from_pull = get_labels(pull=pull)
+
+    if label in labels_from_pull:
         print(f"Remove {label} from {pull.title}")
         pull.remove_from_labels(label=label)
 
@@ -69,3 +85,31 @@ def print_os_environment():
     """
     for key, val in os.environ.items():
         print(f"{key}: {val}")
+
+
+def semver_labels_exist_in_pull_labels(pull):
+    return any([label in SEMVER_LABELS_SET for label in get_labels(pull=pull)])
+
+
+def get_semver_user_input(body):
+    match = re.match(
+        rf".*\B/(?P<{SEMVER}>{LABEL_KEY_MAJOR}|{LABEL_KEY_MINOR}|{LABEL_KEY_PATCH})\b",
+        body,
+        re.IGNORECASE,
+    )
+    if match:
+        return match.group(SEMVER).lower()
+
+
+def get_semver_label_to_add_from_user_input(body):
+    semver_user_input = get_semver_user_input(body=body)
+    return SEMVER_USER_INPUT_LABELS_MAP.get(semver_user_input)
+
+
+def add_remove_labels(pull, label_to_add, labels_to_remove, labels_from_pull):
+    if label_to_add not in labels_from_pull:
+        add_label(pull=pull, label=label_to_add)
+
+    for label in labels_to_remove:
+        if label in labels_from_pull:
+            remove_label(pull=pull, label=label)
