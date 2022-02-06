@@ -7,11 +7,10 @@ from src.add_reviewers import add_reviewers
 from src.block_offensive_lanague import block_offensive_language
 from src.issue_from_pr import close_issue_from_pr, issue_from_pr
 from src.labels_by_user_input import labels_by_user_input
-from src.merge_status_label import merge_status_label
 from src.remove_merge_checks import remove_merge_checks
 from src.size_label_prs import size_label_prs
 from src.upload_to_pypi import upload_to_pypi
-from src.utils import get_pull_and_commit_by_commit_sha, get_pull_from_data
+from src.utils import get_pull_from_data
 
 
 if __name__ == "__main__":
@@ -43,10 +42,6 @@ if __name__ == "__main__":
 
     if action == "upload_to_pypi":
         upload_to_pypi()
-
-    if action == "merge_status_label":
-        _pull, _commit = get_pull_and_commit_by_commit_sha(event_data=data, repo=repo)
-        merge_status_label(pull=_pull, commit=_commit)
 
     if action == "issue_from_pr":
         issue_from_pr(repo=repo, pull=pull)
