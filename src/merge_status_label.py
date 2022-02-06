@@ -7,6 +7,8 @@ def merge_status_label(pull, commit):
         print("No commit given")
         return
 
+    print(pull)
+    print(commit)
     if commit.get_combined_status().state == "success":
         add_label(pull=pull, label=READY_FOR_MERGE)
     else:
