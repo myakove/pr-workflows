@@ -13,9 +13,12 @@ def upload_to_pypi():
     tag = os.environ["GITHUB_REF"].split("/")[-1]
     build_folder = "dist"
     version = tag.strip("v")
+    base_branch = re.findall(r"v\d+.\d+", tag)[0]
+
+    print(f"Building version {version}")
+    print(f"Building from branch {base_branch}")
 
     repo = pygit2.Repository(path=".")
-    base_branch = re.findall(r"v\d+.\d+", tag)[0]
     repo.checkout(refname=f"refs/remotes/origin/{base_branch}")
 
     subprocess.check_output(
