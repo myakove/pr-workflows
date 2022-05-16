@@ -1,4 +1,5 @@
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -14,7 +15,8 @@ def upload_to_pypi():
     version = tag.strip("v")
 
     repo = pygit2.Repository(path=".")
-    repo.checkout(refname=f"refs/remotes/origin/branch-{tag}")
+    base_branch = re.findall(r"v\d+.\d+", tag)[0]
+    repo.checkout(refname=f"refs/remotes/origin/{base_branch}")
 
     subprocess.check_output(
         shlex.split(f"python -m build --sdist --outdir {build_folder}/")

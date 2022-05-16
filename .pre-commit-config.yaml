@@ -12,22 +12,22 @@ repos:
           - --remove-all-unused-imports
 
   - repo: https://github.com/hadialqattan/pycln
-    rev: "v1.1.0"
+    rev: "v1.3.2"
     hooks:
       - id: pycln
 
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: "v5.9.3"
+    rev: "v5.10.1"
     hooks:
       - id: isort
 
   - repo: https://github.com/psf/black
-    rev: "21.12b0"
+    rev: "22.3.0"
     hooks:
     - id: black
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: "v4.0.1"
+    rev: "v4.2.0"
     hooks:
     - id: check-merge-conflict
     - id: debug-statements
