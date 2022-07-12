@@ -5,9 +5,6 @@ import subprocess
 
 
 def upload_to_pypi():
-    href = os.environ["GITHUB_REF"]
-    print(href)
-    print(type(href))
     os.environ["TWINE_USERNAME"] = "__token__"
     os.environ["TWINE_PASSWORD"] = os.environ["INPUT_PYPI_TOKEN"]
     build_folder = "dist"
